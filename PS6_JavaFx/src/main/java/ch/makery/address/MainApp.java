@@ -72,7 +72,6 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("AddressApp");
         
-        // Set the application icon.
         this.primaryStage.getIcons().add(new Image("file:resources/images/address_book_32.png"));
 
         initRootLayout();
@@ -86,17 +85,14 @@ public class MainApp extends Application {
      */
     public void initRootLayout() {
         try {
-            // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class
                     .getResource("view/RootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
 
-            // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
 
-            // Give the controller access to the main app.
             RootLayoutController controller = loader.getController();
             controller.setMainApp(this);
 
@@ -105,7 +101,6 @@ public class MainApp extends Application {
             e.printStackTrace();
         }
 
-        // Try to load last opened person file.
         File file = getPersonFilePath();
         if (file != null) {
             loadPersonDataFromFile(file);
@@ -117,15 +112,12 @@ public class MainApp extends Application {
      */
     public void showPersonOverview() {
         try {
-            // Load person overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/PersonOverview.fxml"));
             AnchorPane personOverview = (AnchorPane) loader.load();
 
-            // Set person overview into the center of root layout.
             rootLayout.setCenter(personOverview);
 
-            // Give the controller access to the main app.
             PersonOverviewController controller = loader.getController();
             controller.setMainApp(this);
 
@@ -144,12 +136,10 @@ public class MainApp extends Application {
      */
     public boolean showPersonEditDialog(Person person) {
         try {
-            // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/PersonEditDialog.fxml"));
             AnchorPane page = (AnchorPane) loader.load();
 
-            // Create the dialog Stage.
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Edit Person");
             dialogStage.initModality(Modality.WINDOW_MODAL);
@@ -157,15 +147,12 @@ public class MainApp extends Application {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
-            // Set the person into the controller.
             PersonEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setPerson(person);
             
-            // Set the dialog icon.
             dialogStage.getIcons().add(new Image("file:resources/images/edit.png"));
 
-            // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
             return controller.isOkClicked();
@@ -180,7 +167,6 @@ public class MainApp extends Application {
      */
     public void showBirthdayStatistics() {
         try {
-            // Load the fxml file and create a new stage for the popup.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/BirthdayStatistics.fxml"));
             AnchorPane page = (AnchorPane) loader.load();
@@ -191,10 +177,8 @@ public class MainApp extends Application {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
             
-            // Set the dialog icon.
             dialogStage.getIcons().add(new Image("file:resources/images/calendar.png"));
 
-            // Set the persons into the controller.
             BirthdayStatisticsController controller = loader.getController();
             controller.setPersonData(personData);
 
@@ -233,12 +217,10 @@ public class MainApp extends Application {
         if (file != null) {
             prefs.put("filePath", file.getPath());
 
-            // Update the stage title.
             primaryStage.setTitle("AddressApp - " + file.getName());
         } else {
             prefs.remove("filePath");
 
-            // Update the stage title.
             primaryStage.setTitle("AddressApp");
         }
     }
@@ -255,16 +237,14 @@ public class MainApp extends Application {
                     .newInstance(PersonListWrapper.class);
             Unmarshaller um = context.createUnmarshaller();
 
-            // Reading XML from the file and unmarshalling.
             PersonListWrapper wrapper = (PersonListWrapper) um.unmarshal(file);
 
             personData.clear();
             personData.addAll(wrapper.getPersons());
 
-            // Save the file path to the registry.
             setPersonFilePath(file);
 
-        } catch (Exception e) { // catches ANY exception
+        } catch (Exception e) { 
         	Alert alert = new Alert(AlertType.ERROR);
         	alert.setTitle("Error");
         	alert.setHeaderText("Could not load data");
@@ -286,16 +266,13 @@ public class MainApp extends Application {
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            // Wrapping our person data.
             PersonListWrapper wrapper = new PersonListWrapper();
             wrapper.setPersons(personData);
 
-            // Marshalling and saving XML to the file.
             m.marshal(wrapper, file);
 
-            // Save the file path to the registry.
             setPersonFilePath(file);
-        } catch (Exception e) { // catches ANY exception
+        } catch (Exception e) { 
         	Alert alert = new Alert(AlertType.ERROR);
         	alert.setTitle("Error");
         	alert.setHeaderText("Could not save data");
